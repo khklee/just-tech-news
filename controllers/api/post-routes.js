@@ -1,5 +1,6 @@
 const sequelize = require('../../config/connection');
 const router = require('express').Router();
+const withAuth = require('../../utils/auth')
 const { Post, User, Vote, Comment } = require('../../models');
 
 // get all users
@@ -71,11 +72,11 @@ router.get('/:id', (req, res) => {
       });
   });
 
-router.post('/', (req, res) => {
+router.post('/', withAuth, (req, res) => {
     Post.create({
         title: req.body.title,
         post_url: req.body.post_url,
-        user_id: req.body.user_id
+        user_id: req.session.user_id
     })
         .then(dbPostData => res.json(dbPostData))
         .catch(err => {
